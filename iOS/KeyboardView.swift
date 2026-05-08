@@ -39,27 +39,20 @@ struct KeyboardView: View {
                 }
             }
             
-            // TextField invisible mejorado
-            TextField("", text: $inputText)
-                .focused($isFocused)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .keyboardType(.default)
-                .opacity(0)
-                .frame(width: 1, height: 1)
-                .onChange(of: inputText) { _, newValue in
-                    // Si el texto es menor a 1, pulsaron borrar
-                    if newValue.count < 1 {
-                        manager.sendSpecial(.delete)
-                        inputText = " " // Reset ancla
-                    } 
-                    // Si es mayor a 1, pulsaron una tecla
-                    else if newValue.count > 1 {
-                        let char = String(newValue.suffix(1))
-                        manager.send(command: .keyboard(char: char))
-                        inputText = " " // Reset ancla
+            // Captura de teclado nativo usando UIViewRepresentable
+            HiddenKeyCaptureView(
+                onKeyPress: { char in
+                    for c in char {
+                        manager.send(command: .keyboard(char: String(c)))
                     }
+                },
+                onDelete: {
+                    manager.sendSpecial(.delete)
                 }
+            )
+            .focused($isFocused)
+            .frame(width: 1, height: 1)
+            .opacity(0)
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         FunctionKeyBar(manager: manager)
@@ -299,6 +292,60 @@ private struct TrackpadView: View {
                     .padding(24)
                 }
             }
+        }
+    }
+}
+
+// MARK: - Native Keyboard Capture
+
+class KeyCaptureTextField: UITextField {
+    var onDelete: (() -> Void)?
+    
+    override func deleteBackward() {
+        onDelete?()
+        super.deleteBackward()
+    }
+}
+
+struct HiddenKeyCaptureView: UIViewRepresentable {
+    var onKeyPress: (String) -> Void
+    var onDelete: () -> Void
+
+    func makeUIView(context: Context) -> KeyCaptureTextField {
+        let textField = KeyCaptureTextField()
+        textField.delegate = context.coordinator
+        textField.autocorrectionType = .no
+        textField.autocapitalizationType = .none
+        textField.spellCheckingType = .no
+        textField.keyboardType = .default
+        
+        // Hacerlo completamente invisible
+        textField.textColor = .clear
+        textField.tintColor = .clear
+        textField.backgroundColor = .clear
+        
+        textField.onDelete = onDelete
+        return textField
+    }
+
+    func updateUIView(_ uiView: KeyCaptureTextField, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UITextFieldDelegate {
+        var parent: HiddenKeyCaptureView
+
+        init(_ parent: HiddenKeyCaptureView) {
+            self.parent = parent
+        }
+
+        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            if !string.isEmpty {
+                parent.onKeyPress(string)
+            }
+            return false // Prevenir que el textfield guarde estado, manteniéndolo vacío
         }
     }
 }
