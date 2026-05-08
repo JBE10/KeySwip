@@ -1,0 +1,486 @@
+// !$*UTF8*$!
+{
+    archiveVersion = 1;
+    classes = {
+    };
+    objectVersion = 56;
+    objects = {
+
+/* Begin PBXBuildFile section */
+        A1B2C3D40100000000000001 /* MultipeerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000001 /* MultipeerManager.swift */; };
+        A1B2C3D40100000000000002 /* KeySwipApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000002 /* KeySwipApp.swift */; };
+        A1B2C3D40100000000000003 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000003 /* KeyboardView.swift */; };
+        A1B2C3D40100000000000004 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000010 /* MultipeerConnectivity.framework */; };
+        A1B2C3D40100000000000011 /* MultipeerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000001 /* MultipeerManager.swift */; };
+        A1B2C3D40100000000000014 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000010 /* MultipeerConnectivity.framework */; };
+        A1B2C3D40100000000000015 /* KeyInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000040 /* KeyInjector.swift */; };
+        A1B2C3D40100000000000018 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000042 /* Models.swift */; };
+        A1B2C3D40100000000000019 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000042 /* Models.swift */; };
+        A1B2C3D4010000000000001A /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000050 /* MacAppDelegate.swift */; };
+        A1B2C3D4010000000000001B /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D40200000000000051 /* MenuBarManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+        A1B2C3D40200000000000001 /* MultipeerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerManager.swift; sourceTree = "<group>"; };
+        A1B2C3D40200000000000002 /* KeySwipApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeySwipApp.swift; sourceTree = "<group>"; };
+        A1B2C3D40200000000000003 /* KeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardView.swift; sourceTree = "<group>"; };
+        A1B2C3D40200000000000010 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+        A1B2C3D40200000000000020 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+        A1B2C3D40200000000000021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+        A1B2C3D40200000000000022 /* KeySwipMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeySwipMac.entitlements; sourceTree = "<group>"; };
+        A1B2C3D40200000000000030 /* KeySwip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeySwip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+        A1B2C3D40200000000000031 /* KeySwipMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeySwipMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+        A1B2C3D40200000000000040 /* KeyInjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInjector.swift; sourceTree = "<group>"; };
+        A1B2C3D40200000000000042 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+        A1B2C3D40200000000000050 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
+        A1B2C3D40200000000000051 /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+        A1B2C3D40300000000000001 /* Frameworks */ = {
+            isa = PBXFrameworksBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+                A1B2C3D40100000000000004 /* MultipeerConnectivity.framework in Frameworks */,
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        A1B2C3D40300000000000002 /* Frameworks */ = {
+            isa = PBXFrameworksBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+                A1B2C3D40100000000000014 /* MultipeerConnectivity.framework in Frameworks */,
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+        A1B2C3D40400000000000001 = {
+            isa = PBXGroup;
+            children = (
+                A1B2C3D40400000000000002 /* Shared */,
+                A1B2C3D40400000000000003 /* iOS */,
+                A1B2C3D40400000000000004 /* macOS */,
+                A1B2C3D40400000000000005 /* Products */,
+                AD5D8DB12FA8D1CA00B6F9F9 /* Recovered References */,
+            );
+            sourceTree = "<group>";
+        };
+        A1B2C3D40400000000000002 /* Shared */ = {
+            isa = PBXGroup;
+            children = (
+                A1B2C3D40200000000000001 /* MultipeerManager.swift */,
+                A1B2C3D40200000000000042 /* Models.swift */,
+            );
+            path = Shared;
+            sourceTree = "<group>";
+        };
+        A1B2C3D40400000000000003 /* iOS */ = {
+            isa = PBXGroup;
+            children = (
+                A1B2C3D40200000000000002 /* KeySwipApp.swift */,
+                A1B2C3D40200000000000003 /* KeyboardView.swift */,
+                A1B2C3D40200000000000020 /* Info.plist */,
+            );
+            path = iOS;
+            sourceTree = "<group>";
+        };
+        A1B2C3D40400000000000004 /* macOS */ = {
+            isa = PBXGroup;
+            children = (
+                A1B2C3D40200000000000050 /* MacAppDelegate.swift */,
+                A1B2C3D40200000000000051 /* MenuBarManager.swift */,
+                A1B2C3D40200000000000040 /* KeyInjector.swift */,
+                A1B2C3D40200000000000021 /* Info.plist */,
+                A1B2C3D40200000000000022 /* KeySwipMac.entitlements */,
+            );
+            path = macOS;
+            sourceTree = "<group>";
+        };
+        A1B2C3D40400000000000005 /* Products */ = {
+            isa = PBXGroup;
+            children = (
+                A1B2C3D40200000000000030 /* KeySwip.app */,
+                A1B2C3D40200000000000031 /* KeySwipMac.app */,
+            );
+            name = Products;
+            sourceTree = "<group>";
+        };
+        AD5D8DB12FA8D1CA00B6F9F9 /* Recovered References */ = {
+            isa = PBXGroup;
+            children = (
+                A1B2C3D40200000000000010 /* MultipeerConnectivity.framework */,
+            );
+            name = "Recovered References";
+            sourceTree = "<group>";
+        };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+        A1B2C3D40500000000000001 /* KeySwip */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = A1B2C3D40900000000000001 /* Build configuration list for PBXNativeTarget "KeySwip" */;
+            buildPhases = (
+                A1B2C3D40600000000000001 /* Sources */,
+                A1B2C3D40300000000000001 /* Frameworks */,
+            );
+            buildRules = (
+            );
+            dependencies = (
+            );
+            name = KeySwip;
+            productName = KeySwip;
+            productReference = A1B2C3D40200000000000030 /* KeySwip.app */;
+            productType = "com.apple.product-type.application";
+        };
+        A1B2C3D40500000000000002 /* KeySwipMac */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = A1B2C3D40900000000000002 /* Build configuration list for PBXNativeTarget "KeySwipMac" */;
+            buildPhases = (
+                A1B2C3D40600000000000002 /* Sources */,
+                A1B2C3D40300000000000002 /* Frameworks */,
+            );
+            buildRules = (
+            );
+            dependencies = (
+            );
+            name = KeySwipMac;
+            productName = KeySwipMac;
+            productReference = A1B2C3D40200000000000031 /* KeySwipMac.app */;
+            productType = "com.apple.product-type.application";
+        };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+        A1B2C3D40700000000000001 /* Project object */ = {
+            isa = PBXProject;
+            attributes = {
+                BuildIndependentTargetsInParallel = 1;
+                LastSwiftUpdateCheck = 1520;
+                LastUpgradeCheck = 2640;
+                TargetAttributes = {
+                    A1B2C3D40500000000000001 = {
+                        CreatedOnToolsVersion = 15.2;
+                    };
+                    A1B2C3D40500000000000002 = {
+                        CreatedOnToolsVersion = 15.2;
+                    };
+                };
+            };
+            buildConfigurationList = A1B2C3D40800000000000001 /* Build configuration list for PBXProject "KeySwip" */;
+            compatibilityVersion = "Xcode 14.0";
+            developmentRegion = en;
+            hasScannedForEncodings = 0;
+            knownRegions = (
+                en,
+                Base,
+            );
+            mainGroup = A1B2C3D40400000000000001;
+            productRefGroup = A1B2C3D40400000000000005 /* Products */;
+            projectDirPath = "";
+            projectRoot = "";
+            targets = (
+                A1B2C3D40500000000000001 /* KeySwip */,
+                A1B2C3D40500000000000002 /* KeySwipMac */,
+            );
+        };
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+        A1B2C3D40600000000000001 /* Sources */ = {
+            isa = PBXSourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+                A1B2C3D40100000000000001 /* MultipeerManager.swift in Sources */,
+                A1B2C3D40100000000000018 /* Models.swift in Sources */,
+                A1B2C3D40100000000000002 /* KeySwipApp.swift in Sources */,
+                A1B2C3D40100000000000003 /* KeyboardView.swift in Sources */,
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        A1B2C3D40600000000000002 /* Sources */ = {
+            isa = PBXSourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = (
+                A1B2C3D40100000000000011 /* MultipeerManager.swift in Sources */,
+                A1B2C3D40100000000000019 /* Models.swift in Sources */,
+                A1B2C3D4010000000000001A /* MacAppDelegate.swift in Sources */,
+                A1B2C3D4010000000000001B /* MenuBarManager.swift in Sources */,
+                A1B2C3D40100000000000015 /* KeyInjector.swift in Sources */,
+            );
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+        A1B2C3D40A00000000000001 /* Debug */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                ALWAYS_SEARCH_USER_PATHS = NO;
+                ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+                CLANG_ANALYZER_NONNULL = YES;
+                CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+                CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+                CLANG_ENABLE_MODULES = YES;
+                CLANG_ENABLE_OBJC_ARC = YES;
+                CLANG_ENABLE_OBJC_WEAK = YES;
+                CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+                CLANG_WARN_BOOL_CONVERSION = YES;
+                CLANG_WARN_COMMA = YES;
+                CLANG_WARN_CONSTANT_CONVERSION = YES;
+                CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+                CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+                CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+                CLANG_WARN_EMPTY_BODY = YES;
+                CLANG_WARN_ENUM_CONVERSION = YES;
+                CLANG_WARN_INFINITE_RECURSION = YES;
+                CLANG_WARN_INT_CONVERSION = YES;
+                CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+                CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+                CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+                CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+                CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+                CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+                CLANG_WARN_STRICT_PROTOTYPES = YES;
+                CLANG_WARN_SUSPICIOUS_MOVE = YES;
+                CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+                CLANG_WARN_UNREACHABLE_CODE = YES;
+                CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+                COPY_PHASE_STRIP = NO;
+                DEAD_CODE_STRIPPING = YES;
+                DEBUG_INFORMATION_FORMAT = dwarf;
+                ENABLE_STRICT_OBJC_MSGSEND = YES;
+                ENABLE_TESTABILITY = YES;
+                ENABLE_USER_SCRIPT_SANDBOXING = YES;
+                GCC_C_LANGUAGE_STANDARD = gnu17;
+                GCC_DYNAMIC_NO_PIC = NO;
+                GCC_NO_COMMON_BLOCKS = YES;
+                GCC_OPTIMIZATION_LEVEL = 0;
+                GCC_PREPROCESSOR_DEFINITIONS = (
+                    "DEBUG=1",
+                    "$(inherited)",
+                );
+                GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+                GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+                GCC_WARN_UNDECLARED_SELECTOR = YES;
+                GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+                GCC_WARN_UNUSED_FUNCTION = YES;
+                GCC_WARN_UNUSED_VARIABLE = YES;
+                IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+                LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+                MACOSX_DEPLOYMENT_TARGET = 14.0;
+                MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+                MTL_FAST_MATH = YES;
+                ONLY_ACTIVE_ARCH = YES;
+                STRING_CATALOG_GENERATE_SYMBOLS = YES;
+                SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+                SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+            };
+            name = Debug;
+        };
+        A1B2C3D40A00000000000002 /* Release */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                ALWAYS_SEARCH_USER_PATHS = NO;
+                ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+                CLANG_ANALYZER_NONNULL = YES;
+                CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+                CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+                CLANG_ENABLE_MODULES = YES;
+                CLANG_ENABLE_OBJC_ARC = YES;
+                CLANG_ENABLE_OBJC_WEAK = YES;
+                CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+                CLANG_WARN_BOOL_CONVERSION = YES;
+                CLANG_WARN_COMMA = YES;
+                CLANG_WARN_CONSTANT_CONVERSION = YES;
+                CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+                CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+                CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+                CLANG_WARN_EMPTY_BODY = YES;
+                CLANG_WARN_ENUM_CONVERSION = YES;
+                CLANG_WARN_INFINITE_RECURSION = YES;
+                CLANG_WARN_INT_CONVERSION = YES;
+                CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+                CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+                CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+                CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+                CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+                CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+                CLANG_WARN_STRICT_PROTOTYPES = YES;
+                CLANG_WARN_SUSPICIOUS_MOVE = YES;
+                CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+                CLANG_WARN_UNREACHABLE_CODE = YES;
+                CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+                COPY_PHASE_STRIP = NO;
+                DEAD_CODE_STRIPPING = YES;
+                DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+                ENABLE_NS_ASSERTIONS = NO;
+                ENABLE_STRICT_OBJC_MSGSEND = YES;
+                ENABLE_USER_SCRIPT_SANDBOXING = YES;
+                GCC_C_LANGUAGE_STANDARD = gnu17;
+                GCC_NO_COMMON_BLOCKS = YES;
+                GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+                GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+                GCC_WARN_UNDECLARED_SELECTOR = YES;
+                GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+                GCC_WARN_UNUSED_FUNCTION = YES;
+                GCC_WARN_UNUSED_VARIABLE = YES;
+                IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+                LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+                MACOSX_DEPLOYMENT_TARGET = 14.0;
+                MTL_ENABLE_DEBUG_INFO = NO;
+                MTL_FAST_MATH = YES;
+                STRING_CATALOG_GENERATE_SYMBOLS = YES;
+                SWIFT_COMPILATION_MODE = wholemodule;
+            };
+            name = Release;
+        };
+        A1B2C3D40A00000000000003 /* Debug */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CODE_SIGN_STYLE = Automatic;
+                CURRENT_PROJECT_VERSION = 1;
+                DEVELOPMENT_TEAM = 9NVDP534SA;
+                ENABLE_PREVIEWS = YES;
+                EXECUTABLE_NAME = "$(PRODUCT_NAME)";
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = iOS/Info.plist;
+                INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+                INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+                IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+                LD_RUNPATH_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "@executable_path/Frameworks",
+                );
+                MARKETING_VERSION = 1.0;
+                PRODUCT_BUNDLE_IDENTIFIER = com.keyswip.ios;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SDKROOT = iphoneos;
+                SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+                SWIFT_EMIT_LOC_STRINGS = YES;
+                SWIFT_VERSION = 5.0;
+                TARGETED_DEVICE_FAMILY = "1,2";
+            };
+            name = Debug;
+        };
+        A1B2C3D40A00000000000004 /* Release */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CODE_SIGN_STYLE = Automatic;
+                CURRENT_PROJECT_VERSION = 1;
+                DEVELOPMENT_TEAM = 9NVDP534SA;
+                ENABLE_PREVIEWS = YES;
+                EXECUTABLE_NAME = "$(PRODUCT_NAME)";
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = iOS/Info.plist;
+                INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+                INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+                IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+                LD_RUNPATH_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "@executable_path/Frameworks",
+                );
+                MARKETING_VERSION = 1.0;
+                PRODUCT_BUNDLE_IDENTIFIER = com.keyswip.ios;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SDKROOT = iphoneos;
+                SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+                SWIFT_EMIT_LOC_STRINGS = YES;
+                SWIFT_VERSION = 5.0;
+                TARGETED_DEVICE_FAMILY = "1,2";
+            };
+            name = Release;
+        };
+        A1B2C3D40A00000000000005 /* Debug */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CODE_SIGN_ENTITLEMENTS = macOS/KeySwipMac.entitlements;
+                CODE_SIGN_STYLE = Automatic;
+                COMBINE_HIDPI_IMAGES = YES;
+                CURRENT_PROJECT_VERSION = 1;
+                DEAD_CODE_STRIPPING = YES;
+                DEVELOPMENT_TEAM = "";
+                ENABLE_PREVIEWS = YES;
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = macOS/Info.plist;
+                INFOPLIST_KEY_NSHumanReadableCopyright = "";
+                LD_RUNPATH_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "@executable_path/../Frameworks",
+                );
+                MACOSX_DEPLOYMENT_TARGET = 14.0;
+                MARKETING_VERSION = 1.0;
+                PRODUCT_BUNDLE_IDENTIFIER = com.keyswip.macos;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SDKROOT = macosx;
+                SWIFT_EMIT_LOC_STRINGS = YES;
+                SWIFT_VERSION = 5.0;
+            };
+            name = Debug;
+        };
+        A1B2C3D40A00000000000006 /* Release */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                CODE_SIGN_ENTITLEMENTS = macOS/KeySwipMac.entitlements;
+                CODE_SIGN_STYLE = Automatic;
+                COMBINE_HIDPI_IMAGES = YES;
+                CURRENT_PROJECT_VERSION = 1;
+                DEAD_CODE_STRIPPING = YES;
+                DEVELOPMENT_TEAM = "";
+                ENABLE_PREVIEWS = YES;
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = macOS/Info.plist;
+                INFOPLIST_KEY_NSHumanReadableCopyright = "";
+                LD_RUNPATH_SEARCH_PATHS = (
+                    "$(inherited)",
+                    "@executable_path/../Frameworks",
+                );
+                MACOSX_DEPLOYMENT_TARGET = 14.0;
+                MARKETING_VERSION = 1.0;
+                PRODUCT_BUNDLE_IDENTIFIER = com.keyswip.macos;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SDKROOT = macosx;
+                SWIFT_EMIT_LOC_STRINGS = YES;
+                SWIFT_VERSION = 5.0;
+            };
+            name = Release;
+        };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+        A1B2C3D40800000000000001 /* Build configuration list for PBXProject "KeySwip" */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (
+                A1B2C3D40A00000000000001 /* Debug */,
+                A1B2C3D40A00000000000002 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
+        A1B2C3D40900000000000001 /* Build configuration list for PBXNativeTarget "KeySwip" */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (
+                A1B2C3D40A00000000000003 /* Debug */,
+                A1B2C3D40A00000000000004 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
+        A1B2C3D40900000000000002 /* Build configuration list for PBXNativeTarget "KeySwipMac" */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (
+                A1B2C3D40A00000000000005 /* Debug */,
+                A1B2C3D40A00000000000006 /* Release */,
+            );
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
+/* End XCConfigurationList section */
+    };
+    rootObject = A1B2C3D40700000000000001 /* Project object */;
+}

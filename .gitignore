@@ -1,0 +1,22 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad
+*.xccheckout
+*.xcscheme
+*.xscheduleresults
+xcuserdata/
+xcshareddata/xcschemes/
+xcshareddata/swiftpm/configuration/
+
+# macOS
+.DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Gemini CLI
+.gemini_security/
+memory/
