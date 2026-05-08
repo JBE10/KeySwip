@@ -222,77 +222,80 @@ private struct FunctionKey: View {
 
 private struct TrackpadView: View {
     @ObservedObject var manager: MultipeerManager
+    @Binding var isKeyboardOpen: Bool
     @State private var lastDragTranslation: CGSize = .zero
     @State private var accumulatedDelta: CGSize = .zero
     @State private var lastSendTime: Date = Date()
     
     var body: some View {
-        VStack(spacing: 8) {
-            // Zona del trackpad principal
-            ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.systemGray6))
-                
-                Text("Trackpad")
-                    .foregroundStyle(.secondary.opacity(0.5))
-                    .font(.headline)
-            }
-            .contentShape(Rectangle())
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 1)
-                    .onChanged { value in
-                        let dx = value.translation.width - lastDragTranslation.width
-                        let dy = value.translation.height - lastDragTranslation.height
-                        lastDragTranslation = value.translation
-                        
-                        accumulatedDelta.width += dx
-                        accumulatedDelta.height += dy
-                        
-                        // Enviamos cada ~16ms (aprox 60fps) para no saturar pero mantener fluidez
-                        if Date().timeIntervalSince(lastSendTime) > 0.016 {
-                            manager.send(text: "MOUSE:MOVE:\(accumulatedDelta.width):\(accumulatedDelta.height)")
-                            accumulatedDelta = .zero
-                            lastSendTime = Date()
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 1)
+                        .onChanged { value in
+                            // Gesto de bajar teclado (swipe rápido hacia abajo)
+                            if value.translation.height > 100 && isKeyboardOpen {
+                                isKeyboardOpen = false
+                                return
+                            }
+                            
+                            let dx = value.translation.width - lastDragTranslation.width
+                            let dy = value.translation.height - lastDragTranslation.height
+                            lastDragTranslation = value.translation
+                            
+                            accumulatedDelta.width += dx
+                            accumulatedDelta.height += dy
+                            
+                            if Date().timeIntervalSince(lastSendTime) > 0.016 {
+                                manager.send(text: "MOUSE:MOVE:\(accumulatedDelta.width):\(accumulatedDelta.height)")
+                                accumulatedDelta = .zero
+                                lastSendTime = Date()
+                            }
                         }
-                    }
-                    .onEnded { _ in
-                        lastDragTranslation = .zero
-                        // Enviamos cualquier remanente
-                        if accumulatedDelta != .zero {
-                            manager.send(text: "MOUSE:MOVE:\(accumulatedDelta.width):\(accumulatedDelta.height)")
-                            accumulatedDelta = .zero
+                        .onEnded { _ in
+                            lastDragTranslation = .zero
+                            if accumulatedDelta != .zero {
+                                manager.send(text: "MOUSE:MOVE:\(accumulatedDelta.width):\(accumulatedDelta.height)")
+                                accumulatedDelta = .zero
+                            }
                         }
+                )
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        manager.send(text: "MOUSE:CLICK:LEFT")
                     }
-            )
-            .simultaneousGesture(
-                TapGesture().onEnded {
-                    manager.send(text: "MOUSE:CLICK:LEFT")
-                }
-            )
+                )
             
-            // Botones de click explícitos abajo del trackpad
-            HStack(spacing: 8) {
-                Button {
-                    manager.send(text: "MOUSE:CLICK:LEFT")
-                } label: {
-                    Text("Click Izquierdo")
-                        .font(.system(size: 14, weight: .medium))
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(Color(.systemGray6))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+            VStack {
+                Text("Trackpad")
+                    .foregroundStyle(.secondary.opacity(0.15))
+                    .font(.system(size: 40, weight: .black))
+                Text("Desliza para mover • Toca para click\nDesliza hacia abajo para cerrar teclado")
+                    .font(.caption2)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary.opacity(0.3))
+            }
+            
+            // Botón Click Derecho discreto
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button {
+                        manager.send(text: "MOUSE:CLICK:RIGHT")
+                    } label: {
+                        VStack {
+                            Image(systemName: "cursorarrow.and.square.on.square.dashed")
+                            Text("R-Click").font(.system(size: 10, weight: .bold))
+                        }
+                        .frame(width: 64, height: 64)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.secondary.opacity(0.2), lineWidth: 1))
+                    }
+                    .padding(24)
                 }
-                .buttonStyle(.plain)
-                
-                Button {
-                    manager.send(text: "MOUSE:CLICK:RIGHT")
-                } label: {
-                    Text("Click Derecho")
-                        .font(.system(size: 14, weight: .medium))
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(Color(.systemGray6))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .buttonStyle(.plain)
             }
         }
     }
