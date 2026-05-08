@@ -33,6 +33,12 @@ final class MultipeerManager: NSObject, ObservableObject {
     @Published private(set) var connectedPeers: [MCPeerID] = []
     @Published private(set) var receivedText: String = ""
     @Published private(set) var linkState: MultipeerLinkState = .searching
+    
+    /// Callback para solicitar confirmación de conexión (usado en el Mac).
+    var invitationHandler: ((MCPeerID, @escaping (Bool) -> Void) -> Void)?
+    
+    /// Callback para procesar datos recibidos.
+    var didReceiveData: ((Data, MCPeerID) -> Void)?
 
     init(role: MultipeerRole) {
         self.role = role
@@ -91,20 +97,24 @@ final class MultipeerManager: NSObject, ObservableObject {
     }
 
     func send(text: String) {
-        guard !session.connectedPeers.isEmpty else {
-            print("No hay peers conectados")
-            return
-        }
+        guard !session.connectedPeers.isEmpty else { return }
         guard let data = text.data(using: .utf8) else { return }
+        try? session.send(data, toPeers: session.connectedPeers, with: .reliable)
+    }
+
+    /// Envía un comando estructurado codificado en JSON (Nueva Arquitectura).
+    func send(command: DeviceCommand) {
+        guard !session.connectedPeers.isEmpty else { return }
         do {
+            let data = try JSONEncoder().encode(command)
             try session.send(data, toPeers: session.connectedPeers, with: .reliable)
         } catch {
-            print("Error enviando: \(error.localizedDescription)")
+            print("Error codificando comando: \(error)")
         }
     }
 
     func sendSpecial(_ key: SpecialKey) {
-        send(text: key.rawValue)
+        send(command: .specialKey(key))
     }
 
     private func startAdvertising() {

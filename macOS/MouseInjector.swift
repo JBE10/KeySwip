@@ -1,93 +1,61 @@
-import ApplicationServices
-import CoreGraphics
 import Foundation
+import CoreGraphics
+import ApplicationServices
 
-enum MouseInjector {
-    static func hasPermission() -> Bool {
+protocol MouseInjecting: Sendable {
+    func move(dx: Double, dy: Double) async
+    func click(button: MouseButton) async
+    func scroll(dy: Int) async
+}
+
+actor MacOSMouseInjector: MouseInjecting {
+    
+    private func hasPermission() -> Bool {
         AXIsProcessTrusted()
     }
 
-    static func move(dx: CGFloat, dy: CGFloat) {
+    func move(dx: Double, dy: Double) async {
         guard hasPermission() else { return }
+        
+        let maxDelta: CGFloat = 500.0
+        let clampedDX = max(min(CGFloat(dx), maxDelta), -maxDelta)
+        let clampedDY = max(min(CGFloat(dy), maxDelta), -maxDelta)
+        
         guard let currentEvent = CGEvent(source: nil) else { return }
         let currentLocation = currentEvent.location
-        let newLocation = CGPoint(x: currentLocation.x + dx, y: currentLocation.y + dy)
+        let newLocation = CGPoint(x: currentLocation.x + (clampedDX * 1.5), y: currentLocation.y + (clampedDY * 1.5))
 
         guard let source = CGEventSource(stateID: .hidSystemState) else { return }
         let moveEvent = CGEvent(mouseEventSource: source, mouseType: .mouseMoved, mouseCursorPosition: newLocation, mouseButton: .left)
         moveEvent?.post(tap: .cghidEventTap)
     }
 
-    static func clickLeft() {
+    func click(button: MouseButton) async {
         guard hasPermission() else { return }
         guard let currentEvent = CGEvent(source: nil) else { return }
         let location = currentEvent.location
         
         guard let source = CGEventSource(stateID: .hidSystemState) else { return }
-        let downEvent = CGEvent(mouseEventSource: source, mouseType: .leftMouseDown, mouseCursorPosition: location, mouseButton: .left)
-        let upEvent = CGEvent(mouseEventSource: source, mouseType: .leftMouseUp, mouseCursorPosition: location, mouseButton: .left)
         
-        downEvent?.post(tap: .cghidEventTap)
-        upEvent?.post(tap: .cghidEventTap)
-    }
-
-    static func clickRight() {
-        guard hasPermission() else { return }
-        guard let currentEvent = CGEvent(source: nil) else { return }
-        let location = currentEvent.location
+        let downType: CGEventType = (button == .left) ? .leftMouseDown : .rightMouseDown
+        let upType: CGEventType = (button == .left) ? .leftMouseUp : .rightMouseUp
+        let cgButton: CGMouseButton = (button == .left) ? .left : .right
         
-        guard let source = CGEventSource(stateID: .hidSystemState) else { return }
-        let downEvent = CGEvent(mouseEventSource: source, mouseType: .rightMouseDown, mouseCursorPosition: location, mouseButton: .right)
-        let upEvent = CGEvent(mouseEventSource: source, mouseType: .rightMouseUp, mouseCursorPosition: location, mouseButton: .right)
+        let downEvent = CGEvent(mouseEventSource: source, mouseType: downType, mouseCursorPosition: location, mouseButton: cgButton)
+        let upEvent = CGEvent(mouseEventSource: source, mouseType: upType, mouseCursorPosition: location, mouseButton: cgButton)
         
         downEvent?.post(tap: .cghidEventTap)
         upEvent?.post(tap: .cghidEventTap)
     }
     
-    static func scroll(dy: Int32) {
+    func scroll(dy: Int) async {
         guard hasPermission() else { return }
-        guard let source = CGEventSource(stateID: .hidSystemState) else { return }
         
-        let scrollEvent = CGEvent(scrollWheelEvent2Source: source, units: .pixel, wheelCount: 1, wheel1: dy, wheel2: 0, wheel3: 0)
+        let maxScroll: Int32 = 100
+        let clampedDY = max(min(Int32(dy), maxScroll), -maxScroll)
+        
+        guard let source = CGEventSource(stateID: .hidSystemState) else { return }
+        let scrollEvent = CGEvent(scrollWheelEvent2Source: source, units: .pixel, wheelCount: 1, wheel1: clampedDY, wheel2: 0, wheel3: 0)
         scrollEvent?.post(tap: .cghidEventTap)
-    }
-    
-    static func handle(command: String) {
-        let parts = command.split(separator: ":")
-        guard parts.count >= 2, parts[0] == "MOUSE" else { return }
-        
-        let action = parts[1]
-        switch action {
-        case "MOVE":
-            if parts.count == 4, 
-               let dx = Double(parts[2]), 
-               let dy = Double(parts[3]) {
-                
-                // VULN-002: Limitamos el delta máximo para evitar saltos bruscos malintencionados
-                let maxDelta: CGFloat = 500.0
-                let clampedDX = max(min(CGFloat(dx), maxDelta), -maxDelta)
-                let clampedDY = max(min(CGFloat(dy), maxDelta), -maxDelta)
-                
-                // Multiplicador de sensibilidad (ajustado)
-                move(dx: clampedDX * 1.5, dy: clampedDY * 1.5)
-            }
-        case "CLICK":
-            if parts.count == 3 {
-                if parts[2] == "LEFT" {
-                    clickLeft()
-                } else if parts[2] == "RIGHT" {
-                    clickRight()
-                }
-            }
-        case "SCROLL":
-            if parts.count == 3, let dy = Int32(parts[2]) {
-                // Limitamos el scroll
-                let maxScroll: Int32 = 100
-                let clampedDY = max(min(dy, maxScroll), -maxScroll)
-                scroll(dy: clampedDY)
-            }
-        default:
-            break
-        }
     }
 }

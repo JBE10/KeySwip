@@ -3,163 +3,158 @@ import UIKit
 
 struct KeyboardView: View {
     @StateObject private var manager = MultipeerManager(role: .clientBrowser)
-    @State private var inputText = ""
+    @State private var inputText = " " // Espacio como ancla para detectar borrado
+    @State private var isKeyboardOpen = false
     @FocusState private var isFocused: Bool
 
     var body: some View {
-        VStack(spacing: 0) {
-            StatusBar(manager: manager)
-
-            if case .connected = manager.linkState {
-                TrackpadView(manager: manager)
-                    .frame(maxHeight: .infinity)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
+        ZStack(alignment: .top) {
+            // Fondo que llena TODA la pantalla
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                StatusBar(manager: manager)
                 
-                Button(action: {
-                    isFocused = true
-                }) {
-                    HStack {
-                        Image(systemName: "keyboard")
-                        Text("Abrir Teclado")
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .background(Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
+                if case .connected = manager.linkState {
+                    TrackpadView(manager: manager, isKeyboardOpen: $isKeyboardOpen)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color(.systemGray6).opacity(0.4))
+                } else {
+                    ConnectionWaitingView()
                 }
-                .foregroundStyle(.primary)
-            } else {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.systemGray6))
-                        .padding(.horizontal, 16)
-
-                    VStack(spacing: 16) {
-                        Image(systemName: "laptopcomputer.slash")
-                            .font(.system(size: 44))
-                            .foregroundStyle(.secondary)
-                        Text("Abrí la app en tu Mac")
-                            .font(.headline)
-                        Text("Asegurate de que el Mac y el iPhone estén en la misma red Wi‑Fi.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 28)
+                
+                // Botón inferior más sutil
+                if !isKeyboardOpen && manager.linkState != .searching {
+                    Button(action: { isKeyboardOpen = true }) {
+                        Label("Abrir Teclado", systemImage: "keyboard")
+                            .font(.system(size: 14, weight: .semibold))
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.accentColor.opacity(0.1))
+                            .clipShape(Capsule())
+                            .padding(.horizontal, 40)
+                            .padding(.bottom, 20)
                     }
-                    .padding(.vertical, 8)
                 }
-                .frame(height: min(160, UIScreen.main.bounds.height * 0.22))
-                .contentShape(Rectangle())
-                .onTapGesture { isFocused = true }
             }
-
-            Spacer(minLength: 8)
-
+            
+            // TextField invisible mejorado
             TextField("", text: $inputText)
                 .focused($isFocused)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-                .submitLabel(.done)
-                .opacity(0.01)
+                .keyboardType(.default)
+                .opacity(0)
                 .frame(width: 1, height: 1)
-                .accessibilityHidden(true)
                 .onChange(of: inputText) { _, newValue in
-                    guard !newValue.isEmpty else { return }
-                    for ch in newValue {
-                        manager.send(text: String(ch))
+                    // Si el texto es menor a 1, pulsaron borrar
+                    if newValue.count < 1 {
+                        manager.sendSpecial(.delete)
+                        inputText = " " // Reset ancla
+                    } 
+                    // Si es mayor a 1, pulsaron una tecla
+                    else if newValue.count > 1 {
+                        let char = String(newValue.suffix(1))
+                        manager.send(command: .keyboard(char: char))
+                        inputText = " " // Reset ancla
                     }
-                    inputText = ""
                 }
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
                         FunctionKeyBar(manager: manager)
+                        Spacer()
+                        Button { isKeyboardOpen = false } label: {
+                            Image(systemName: "keyboard.chevron.compact.down").bold()
+                        }
                     }
                 }
         }
-        .contentShape(Rectangle())
-        .onTapGesture { isFocused = true }
         .onAppear {
             manager.start()
-            isFocused = true
+            isKeyboardOpen = true // Auto-open on start if needed
             UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear {
             manager.stop()
             UIApplication.shared.isIdleTimerDisabled = false
         }
+        .onChange(of: isKeyboardOpen) { _, newValue in
+            isFocused = newValue
+        }
+        .onChange(of: isFocused) { _, newValue in
+            isKeyboardOpen = newValue
+        }
     }
 }
+
+// MARK: - Connection Waiting View
+
+private struct ConnectionWaitingView: View {
+    var body: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            Image(systemName: "laptopcomputer.slash")
+                .font(.system(size: 60))
+                .foregroundStyle(.secondary)
+            VStack(spacing: 8) {
+                Text("Esperando Mac")
+                    .font(.title3.bold())
+                Text("Acepta la invitación en tu Mac para comenzar.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 50)
+            }
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Status Bar
 
 private struct StatusBar: View {
     @ObservedObject var manager: MultipeerManager
 
     var body: some View {
         HStack(spacing: 8) {
-            Group {
-                switch manager.linkState {
-                case .searching:
-                    SearchingPulseDot()
-                case .connecting:
-                    Circle()
-                        .fill(Color.orange)
-                        .frame(width: 8, height: 8)
-                case .connected:
-                    Circle()
-                        .fill(Color.green)
-                        .frame(width: 8, height: 8)
-                case .disconnected:
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 8, height: 8)
-                }
-            }
+            Circle()
+                .fill(statusColor)
+                .frame(width: 8, height: 8)
+                .shadow(color: statusColor.opacity(0.5), radius: 4)
 
             Text(statusLabel)
-                .font(.system(size: 13))
+                .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.secondary)
 
-            Spacer(minLength: 0)
+            Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(Color(.systemBackground))
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .frame(height: 0.5)
-                .foregroundStyle(Color(.separator))
+        .padding(.horizontal, 20)
+        .padding(.top, 60) // Padding manual para quedar debajo de la Dynamic Island
+        .padding(.bottom, 12)
+        .background(.ultraThinMaterial)
+    }
+
+    private var statusColor: Color {
+        switch manager.linkState {
+        case .searching: return .orange
+        case .connecting: return .orange
+        case .connected: return .green
+        case .disconnected: return .red
         }
-        .animation(.easeInOut(duration: 0.3), value: manager.linkState)
     }
 
     private var statusLabel: String {
         switch manager.linkState {
-        case .searching:
-            return "Buscando Mac..."
-        case .connecting:
-            return "Conectando..."
-        case .connected(let name):
-            return "Conectado a \(name ?? "Mac")"
-        case .disconnected:
-            return "Mac desconectado"
+        case .searching: return "Buscando..."
+        case .connecting: return "Conectando..."
+        case .connected(let name): return "Conectado a \(name ?? "Mac")"
+        case .disconnected: return "Desconectado"
         }
     }
 }
 
-private struct SearchingPulseDot: View {
-    @State private var animate = false
-
-    var body: some View {
-        Circle()
-            .fill(Color.orange)
-            .frame(width: 8, height: 8)
-            .scaleEffect(animate ? 1.3 : 1.0)
-            .opacity(animate ? 0.5 : 1.0)
-            .onAppear { animate = true }
-            .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: animate)
-    }
-}
+// MARK: - Function Key Bar
 
 private struct FunctionKeyBar: View {
     @ObservedObject var manager: MultipeerManager
@@ -180,10 +175,10 @@ private struct FunctionKeyBar: View {
 
             FunctionKey(label: "↵", accessibilityLabel: "Retorno", accent: true) { manager.sendSpecial(.returnKey) }
         }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 4)
     }
 }
+
+// MARK: - Function Key
 
 private struct FunctionKey: View {
     let label: String
@@ -210,7 +205,7 @@ private struct FunctionKey: View {
                 .minimumScaleFactor(0.6)
                 .lineLimit(1)
                 .frame(minWidth: 32, minHeight: 36)
-                .frame(maxWidth: 40)
+                .frame(maxWidth: 44)
                 .background(accent ? Color.accentColor.opacity(0.18) : Color(.systemGray5))
                 .foregroundStyle(accent ? Color.accentColor : Color.primary)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
@@ -220,13 +215,15 @@ private struct FunctionKey: View {
     }
 }
 
+// MARK: - Trackpad View
+
 private struct TrackpadView: View {
     @ObservedObject var manager: MultipeerManager
     @Binding var isKeyboardOpen: Bool
     @State private var lastDragTranslation: CGSize = .zero
     @State private var accumulatedDelta: CGSize = .zero
     @State private var lastSendTime: Date = Date()
-    
+
     var body: some View {
         ZStack {
             Color.clear
@@ -239,16 +236,16 @@ private struct TrackpadView: View {
                                 isKeyboardOpen = false
                                 return
                             }
-                            
+
                             let dx = value.translation.width - lastDragTranslation.width
                             let dy = value.translation.height - lastDragTranslation.height
                             lastDragTranslation = value.translation
-                            
+
                             accumulatedDelta.width += dx
                             accumulatedDelta.height += dy
-                            
+
                             if Date().timeIntervalSince(lastSendTime) > 0.016 {
-                                manager.send(text: "MOUSE:MOVE:\(accumulatedDelta.width):\(accumulatedDelta.height)")
+                                manager.send(command: .mouseMove(dx: Double(accumulatedDelta.width), dy: Double(accumulatedDelta.height)))
                                 accumulatedDelta = .zero
                                 lastSendTime = Date()
                             }
@@ -256,17 +253,17 @@ private struct TrackpadView: View {
                         .onEnded { _ in
                             lastDragTranslation = .zero
                             if accumulatedDelta != .zero {
-                                manager.send(text: "MOUSE:MOVE:\(accumulatedDelta.width):\(accumulatedDelta.height)")
+                                manager.send(command: .mouseMove(dx: Double(accumulatedDelta.width), dy: Double(accumulatedDelta.height)))
                                 accumulatedDelta = .zero
                             }
                         }
                 )
                 .simultaneousGesture(
                     TapGesture().onEnded {
-                        manager.send(text: "MOUSE:CLICK:LEFT")
+                        manager.send(command: .mouseClick(button: .left))
                     }
                 )
-            
+
             VStack {
                 Text("Trackpad")
                     .foregroundStyle(.secondary.opacity(0.15))
@@ -276,23 +273,28 @@ private struct TrackpadView: View {
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary.opacity(0.3))
             }
-            
+
             // Botón Click Derecho discreto
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
                     Button {
-                        manager.send(text: "MOUSE:CLICK:RIGHT")
+                        manager.send(command: .mouseClick(button: .right))
                     } label: {
-                        VStack {
+                        VStack(spacing: 4) {
                             Image(systemName: "cursorarrow.and.square.on.square.dashed")
-                            Text("R-Click").font(.system(size: 10, weight: .bold))
+                                .font(.system(size: 20))
+                            Text("R-Click")
+                                .font(.system(size: 10, weight: .bold))
                         }
                         .frame(width: 64, height: 64)
                         .background(.ultraThinMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.secondary.opacity(0.2), lineWidth: 1))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(.secondary.opacity(0.2), lineWidth: 1)
+                        )
                     }
                     .padding(24)
                 }

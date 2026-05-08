@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import MultipeerConnectivity
 
 @main
 struct KeySwipMacApp: App {
@@ -15,7 +16,14 @@ struct KeySwipMacApp: App {
 final class MacAppDelegate: NSObject, NSApplicationDelegate {
     private var multipeerManager: MultipeerManager!
     private var menuBarManager: MenuBarManager!
-    private let commandRouter = CommandRouter()
+    
+    // Nueva Arquitectura: Dependencias inyectadas y ensambladas en el Composition Root
+    private let keyboardInjector = MacOSKeyboardInjector()
+    private let mouseInjector = MacOSMouseInjector()
+    private lazy var commandRouter = CommandRouter(
+        keyboardInjector: keyboardInjector,
+        mouseInjector: mouseInjector
+    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         enforceSingleInstance()
@@ -25,6 +33,7 @@ final class MacAppDelegate: NSObject, NSApplicationDelegate {
         multipeerManager = MultipeerManager(role: .hostAdvertiser)
         setupInvitationHandling()
         
+        // Inyección de lógica de ruteo de comandos
         multipeerManager.didReceiveData = { [weak self] data, peerID in
             self?.commandRouter.handle(data: data, from: peerID)
         }
@@ -32,12 +41,17 @@ final class MacAppDelegate: NSObject, NSApplicationDelegate {
         menuBarManager = MenuBarManager(multipeerManager: multipeerManager)
         menuBarManager.setupMenuBar()
 
-        KeyInjector.requestPermission()
+        // Solicitud inicial de permisos de accesibilidad
+        Task {
+            let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+            AXIsProcessTrustedWithOptions(options)
+        }
+        
         multipeerManager.start()
     }
 
     private func setupInvitationHandling() {
-        multipeerManager.invitationHandler = { [weak self] peerID, completion in
+        multipeerManager.invitationHandler = { peerID, completion in
             DispatchQueue.main.async {
                 let alert = NSAlert()
                 alert.messageText = "Solicitud de conexión"
@@ -46,7 +60,6 @@ final class MacAppDelegate: NSObject, NSApplicationDelegate {
                 alert.addButton(withTitle: "Rechazar")
                 alert.alertStyle = .informational
                 
-                // Forzamos que la alerta aparezca encima de todo
                 NSApp.activate(ignoringOtherApps: true)
                 
                 let response = alert.runModal()
